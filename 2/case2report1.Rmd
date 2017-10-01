@@ -1,0 +1,77 @@
+---
+title: "Case Study 2 Report 1"
+author: "Annie Tang"
+date: "10/1/2017"
+output: html_document
+---
+
+```{r, message=FALSE}
+setwd('/Users/AnnieTang/Documents/DUKE/17-18/440/2')
+dat <- read.table("kellydat.txt",header=TRUE)
+library(survminer); library(ggplot2);
+
+summary(dat[which(dat$fail==1),]$nctdel)
+dat[which(dat$fail==1 & dat$nctdel==0),] #row 212, nctdel=0 but got a CT scan. what is the measurement of time?
+
+```
+
+#### nctdel by gender 
+```{r, fig.height=3, fig.width=4, message=FALSE, echo=FALSE}
+qplot(dat[which(dat$male==1),]$nctdel, geom="histogram", fill=I("lightblue"), col=I("white")) + 
+  labs(title='Distribution of nctdel in Male Patients', x='nctdel') + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+qplot(dat[which(dat$male==0),]$nctdel, geom="histogram", fill=I("pink"), col=I("white")) + 
+  labs(title='Distribution of nctdel in Female Patients',  x='nctdel') + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+nctdel_gender <- dat[,c('nctdel','male')]
+ggplot(nctdel_gender,aes(x=nctdel)) + 
+  geom_histogram(data=subset(nctdel_gender,male == 1),fill = "blue", alpha = 0.2, binwidth = 1) +
+  geom_histogram(data=subset(nctdel_gender,male == 0),fill = "red", alpha = 0.2, binwidth = 1) +
+  labs(title="Distributions of nctdel by Gender",  x='nctdel') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+#### nctdel by gender by ethnicity
+
+Non-black patients seem to have a much lower nctdel than black patients. 
+```{r, message=FALSE, echo=FALSE, fig.height=3, fig.width=4}
+# no patients who identify as both black and hispanic 
+dat[which(dat$black == 1 & dat$hisp ==1),]
+
+#black
+qplot(dat[which(dat$black==1),]$nctdel, geom="histogram", fill=I("lightblue"), col=I("white")) + 
+  labs(title='Distribution of nctdel in Black Patients', x='nctdel') + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+qplot(dat[which(dat$black==0),]$nctdel, geom="histogram", fill=I("pink"), col=I("white")) + 
+  labs(title='Distribution of nctdel in Non-Black Patients',  x='nctdel') + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+nctdel_black <- dat[,c('nctdel','black')]
+ggplot(nctdel_black,aes(x=nctdel)) + 
+  geom_histogram(data=subset(nctdel_black,black == 1),fill = "blue", alpha = 0.3, binwidth = 1) +
+  geom_histogram(data=subset(nctdel_black,black == 0),fill = "red", alpha = 0.3, binwidth = 1) +
+  labs(title="Distributions of nctdel by Black/Non-Black",  x='nctdel')
+```
+
+Non-hispanic patients seem to have a much lower nctdel than hispanic patients. 
+
+```{r, message=FALSE, echo=FALSE, fig.height=3, fig.width=4}
+#hisp
+qplot(dat[which(dat$hisp==1),]$nctdel, geom="histogram", fill=I("lightblue"), col=I("white")) + 
+  labs(title='Distribution of nctdel in Hispanic Patients', x='nctdel') + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+qplot(dat[which(dat$hisp==0),]$nctdel, geom="histogram", fill=I("pink"), col=I("white")) + 
+  labs(title='Distribution of nctdel in Non-Hispanic Patients',  x='nctdel') + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+nctdel_hisp <- dat[,c('nctdel','hisp')]
+ggplot(nctdel_hisp,aes(x=nctdel)) + 
+  geom_histogram(data=subset(nctdel_hisp,hisp == 1),fill = "blue", alpha = 0.3, binwidth = 1) +
+  geom_histogram(data=subset(nctdel_hisp,hisp == 0),fill = "red", alpha = 0.3, binwidth = 1) +
+  labs(title="Distributions of nctdel by Hispanic/Non-Hispanic",  x='nctdel') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
